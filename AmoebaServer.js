@@ -161,14 +161,14 @@ function shuffleArray(array) {
 	}
 }
 
-function startGame(id, gameState, gameProps) {
+function startGame(id, gameState, gameSettings) {
 	runningGames[id].gameState = gameState;
 	runningGames[id].gameState.status = 1;
 	runningGames[id].sockets.forEach(({ ws }) =>
 		ws.send(
 			JSON.stringify({
 				action: "START",
-				gameProps,
+				gameSettings,
 			})
 		)
 	);
@@ -301,11 +301,11 @@ function processRequest(ws, data) {
 			break;
 		}
 		case "START_GAME": {
-			const { gameState, gameProps, id } = data;
+			const { gameState, gameSettings, id } = data;
 			if (!basicCheck(ws, id)) {
 				return;
 			}
-			startGame(id, gameState, gameProps);
+			startGame(id, gameState, gameSettings);
 			propagateState(id);
 			break;
 		}
